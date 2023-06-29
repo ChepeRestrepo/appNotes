@@ -57,7 +57,7 @@ app.get("/api/notes", (request, response) => {
   response.json(noteMap);
 });
 
-app.get("/notes/:id", (request, response) => {
+app.get("/api/notes/:id", (request, response) => {
   const id = Number(request.params.id);
   // console.log(id);
   const note = notes.find((note) => note.id === id);
@@ -71,7 +71,7 @@ app.get("/notes/:id", (request, response) => {
   response.json(note);
 });
 
-app.delete("/notes/:id", (request, response) => {
+app.delete("/api/notes/:id", (request, response) => {
   const id = Number(request.params.id);
   notes = notes.filter((note) => note.id !== id);
   response.status(204).end("Nota eliminada con exito");
@@ -80,7 +80,7 @@ const generateId = () => {
   const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
   return maxId + 1;
 };
-app.post("/notes", (request, response) => {
+app.post("/api/notes", (request, response) => {
   const body = request.body;
   if (!body.content) {
     return response.status(400).json({
