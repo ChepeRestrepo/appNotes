@@ -35,7 +35,7 @@ const App = () => {
       setNotes(initialNotes);
     });
   }, []);
-  console.log("render", notes.length, "notes");
+  // console.log("render", notes.length, "notes");
 
   const addNote = (event) => {
     event.preventDefault();
@@ -63,7 +63,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      {/* <Notification message={errorMessage} /> */}
+      <Notification message={errorMessage} />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? "important" : "all"}
