@@ -50,10 +50,25 @@ app.get("/api/notes/:id", (request, response) => {
   // console.log("Esta es el note: " + note);
 });
 
+app.put("/api/notes/:id", (request, response, next) => {
+  const body = request.body;
+
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then((updatedNote) => {
+      response.json(updatedNote);
+    })
+    .catch((error) => next(error));
+});
+
 app.delete("/api/notes/:id", (request, response) => {
   const id = request.params.id;
 
-  Note.findByIdAndDelete(id, (err, result) => {
+  Note.findByIdAndRemove(id, (err, result) => {
     if (err) {
       // Manejar el error si ocurre al eliminar la nota
       console.error(err);
