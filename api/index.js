@@ -65,23 +65,18 @@ app.put("/api/notes/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.delete("/api/notes/:id", (request, response) => {
-  const id = request.params.id;
+app.delete("/api/notes/:id", async (request, response, next) => {
+  try {
+    const result = await Note.findByIdAndRemove(request.params.id);
 
-  Note.findByIdAndRemove(id, (err, result) => {
-    if (err) {
-      // Manejar el error si ocurre al eliminar la nota
-      console.error(err);
-      response.status(500).json({ error: "Error al eliminar la nota" });
-    } else {
-      // Verificar si se encontró y eliminó la nota exitosamente
-      if (result) {
-        response.status(204).end(); // 204 No Content
-      } else {
-        response.status(404).json({ error: "Nota no encontrada" });
-      }
+    if (!result) {
+      return response.status(404).json({ message: "Documento no encontrado" });
     }
-  });
+
+    response.status(204).end();
+  } catch (error) {
+    next(error);
+  }
 });
 
 // const generateId = () => {
