@@ -10,6 +10,16 @@ morgan.token("body", (request, response) =>
 );
 const Note = require("./models/note");
 
+//Manejo de errores
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+  next(error);
+};
+app.use(errorHandler);
 // let notes = [
 //   {
 //     id: 1,
@@ -41,11 +51,16 @@ app.get("/api/notes", (request, response) => {
   });
 });
 
-app.get("/api/notes/:id", (request, response) => {
-  const id = request.params.id;
-  Note.findById(id).then((note) => {
-    response.json(note);
-  });
+app.get("/api/notes/:id", (request, response, next) => {
+  Note.findById(request.params.id)
+    .then((note) => {
+      if (note) {
+        response.json(note);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
   // console.log(note.id, typeof note.id, id, typeof id, note.id === id);
   // console.log("Esta es el note: " + note);
 });
@@ -72,7 +87,6 @@ app.delete("/api/notes/:id", async (request, response, next) => {
     if (!result) {
       return response.status(404).json({ message: "Documento no encontrado" });
     }
-
     response.status(204).end();
   } catch (error) {
     next(error);
@@ -100,6 +114,11 @@ app.post("/api/notes", (request, response) => {
     response.json(savedNote);
   });
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
 
 const PORT = process.env.PORT || 3002;
 app.listen(PORT);
