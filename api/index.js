@@ -101,7 +101,6 @@ app.delete("/api/notes/:id", async (request, response, next) => {
 // };
 app.post("/api/notes", async (request, response, next) => {
   const body = request.body;
-
   try {
     const note = new Note({
       content: body.content,
