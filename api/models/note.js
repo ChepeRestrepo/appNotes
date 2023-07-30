@@ -12,8 +12,15 @@ mongoose
   });
 //TODOS se crea el esquema para la DB
 const noteSchema = new mongoose.Schema({
-  content: String,
-  date: Date,
+  content: {
+    type: String,
+    minlenght: 5,
+    required: true,
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
   important: Boolean,
 });
 //TODOS se eliminan el __v y el __id para evitar problemas
